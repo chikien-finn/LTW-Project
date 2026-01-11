@@ -1,7 +1,7 @@
 
 package vochikien1.controllers;
 import org.springframework.web.bind.annotation.RestController;
-import vochikien1.modules.Student; // Đúng với cấu trúc thư mục của bạn
+import vochikien1.modules.Students; // Đúng với cấu trúc thư mục của bạn
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -43,15 +43,15 @@ public class HelloController {
     }
     //bài 4
     @GetMapping("/student")
-    public Student getStudent() {
-        return new Student(1, "Võ Chí Kiên", 20);
+    public Students getStudent() {
+        return new Students(1, "Võ Chí Kiên", 20);
     }
     //bài 5
     @GetMapping("/students")
-    public List<Student> getStudents() {
-        List<Student> list = new ArrayList<>();
-        list.add(new Student(1, "A", 20));
-        list.add(new Student(2, "B", 21));
+    public List<Students> getStudents() {
+        List<Students> list = new ArrayList<>();
+        list.add(new Students(1, "A", 20));
+        list.add(new Students(2, "B", 21));
         return list;
     }
 
