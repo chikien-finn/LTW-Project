@@ -1,20 +1,27 @@
 package vochikien1.controllers;
 
+import vochikien1.entities.Student;
+import vochikien1.services.StudentService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import vochikien1.entities.Student;
-import vochikien1.services.StudentService;
-
 import java.util.List;
+
 
 @Controller
 public class StudentController {
 
     @Autowired
     private StudentService studentService;
+
+    @GetMapping("/api/students")
+    @ResponseBody
+    public List<Student> getAllStudents() {
+        return studentService.getAllStudents();
+    }
 
     // ===== READ: Danh sách + tìm kiếm =====
     @GetMapping("/students")
@@ -31,7 +38,7 @@ public class StudentController {
         }
 
         model.addAttribute("students", list);
-        return "students";
+        return "students"; // students.html
     }
 
     // ===== READ: Chi tiết =====
@@ -40,7 +47,7 @@ public class StudentController {
         Student s = studentService.getStudentById(id);
         if (s != null) {
             model.addAttribute("student", s);
-            return "student-detail";
+            return "student-detail"; // student-detail.html
         }
         return "redirect:/students";
     }
@@ -49,10 +56,10 @@ public class StudentController {
     @GetMapping("/student/add")
     public String showAddForm(Model model) {
         model.addAttribute("student", new Student());
-        return "student-form";
+        return "student-form"; // student-form.html
     }
 
-    // ===== CREATE: Xử lý thêm =====
+    // ===== CREATE + UPDATE =====
     @PostMapping("/student/save")
     public String saveStudent(@ModelAttribute Student student) {
         studentService.saveStudent(student);
@@ -76,6 +83,4 @@ public class StudentController {
         studentService.deleteStudent(id);
         return "redirect:/students";
     }
-
-
 }
