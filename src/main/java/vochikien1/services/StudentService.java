@@ -2,6 +2,7 @@ package vochikien1.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import vochikien1.Repository.StudentRepository;
 import vochikien1.entities.Student;
@@ -15,20 +16,35 @@ public class StudentService {
     @Autowired
     private StudentRepository repository;
 
-    // 1. Lấy tất cả danh sách (Đã có)
+    // ===== READ: Lấy tất cả =====
     public List<Student> getAllStudents() {
         return repository.findAll();
     }
 
-    // 2. Tìm kiếm sinh viên theo ID (Dùng cho trang Chi tiết)
+    // ===== READ: Lấy theo ID =====
     public Student getStudentById(Integer id) {
         Optional<Student> optional = repository.findById(id);
-        return optional.orElse(null); // Trả về student nếu thấy, ngược lại trả về null
+        return optional.orElse(null);
     }
 
-    // 3. Tìm kiếm sinh viên theo tên (Dùng cho chức năng Tìm kiếm)
+    // ===== READ: Tìm theo tên =====
     public List<Student> searchByName(String name) {
-        // Hàm này yêu cầu bạn phải khai báo trong StudentRepository trước
         return repository.findByNameContainingIgnoreCase(name);
     }
+
+    // ===== CREATE + UPDATE =====
+    public void saveStudent(Student student) {
+        repository.save(student);
+        /*
+         * Nếu student.id == null  → INSERT
+         * Nếu student.id != null  → UPDATE
+         * JPA tự xử lý
+         */
+    }
+
+    // ===== DELETE =====
+    public void deleteStudent(Integer id) {
+        repository.deleteById(id);
+    }
+
 }

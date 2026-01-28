@@ -9,11 +9,13 @@ import jakarta.persistence.GenerationType;
 
 
 @Entity
+
 @Table(name = "Student")
 public class Student {
     @Id
     @Column(name = "ID")
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     @Column(name = "name")
     private String name;
     @Column(name = "age")
@@ -30,17 +32,16 @@ public class Student {
     }
     public Student() {
     }
-    public Student(int id, String name, int age, String email, String gender) {
-        this.id = id;
+    public Student( String name, int age, String email, String gender) {
         this.name = name;
         this.age = age;
         this.email = email;
         this.gender = gender;
     }
-    public int getId() {
+    public Integer getId() {
         return id;
     }
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
     public String getName() {
