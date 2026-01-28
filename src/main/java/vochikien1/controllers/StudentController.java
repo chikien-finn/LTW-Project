@@ -10,63 +10,76 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @Controller
 public class StudentController {
 
     @Autowired
     private StudentService studentService;
 
+    // ===== API JSON =====
     @GetMapping("/api/students")
     @ResponseBody
     public List<Student> getAllStudents() {
         return studentService.getAllStudents();
     }
 
-    // ===== READ: Danh sách + tìm kiếm =====
+    // ===== LIST + SEARCH (ID hoặc NAME) =====
     @GetMapping("/students")
     public String listStudents(
-            @RequestParam(name = "name", required = false) String name,
+            @RequestParam(name = "keyword", required = false) String keyword,
             Model model) {
 
-        List<Student> list;
+        List<Student> students;
 
-        if (name != null && !name.isEmpty()) {
-            list = studentService.searchByName(name);
+        if (keyword != null && !keyword.trim().isEmpty()) {
+
+            // keyword là số → tìm theo ID
+            if (keyword.matches("\\d+")) {
+                Student s = studentService.getStudentById(
+                        Integer.parseInt(keyword)
+                );
+                students = (s != null) ? List.of(s) : List.of();
+            }
+            // keyword là chữ → tìm theo tên
+            else {
+                students = studentService.searchByName(keyword);
+            }
+
         } else {
-            list = studentService.getAllStudents();
+            students = studentService.getAllStudents();
         }
 
-        model.addAttribute("students", list);
-        return "students"; // students.html
+        model.addAttribute("students", students);
+        model.addAttribute("keyword", keyword);
+        return "students";
     }
 
-    // ===== READ: Chi tiết =====
+    // ===== DETAIL =====
     @GetMapping("/student/{id}")
     public String viewDetail(@PathVariable Integer id, Model model) {
         Student s = studentService.getStudentById(id);
         if (s != null) {
             model.addAttribute("student", s);
-            return "student-detail"; // student-detail.html
+            return "student-detail";
         }
         return "redirect:/students";
     }
 
-    // ===== CREATE: Hiển thị form thêm =====
+    // ===== ADD FORM =====
     @GetMapping("/student/add")
     public String showAddForm(Model model) {
         model.addAttribute("student", new Student());
-        return "student-form"; // student-form.html
+        return "student-form";
     }
 
-    // ===== CREATE + UPDATE =====
+    // ===== SAVE (ADD + UPDATE) =====
     @PostMapping("/student/save")
     public String saveStudent(@ModelAttribute Student student) {
         studentService.saveStudent(student);
         return "redirect:/students";
     }
 
-    // ===== UPDATE: Hiển thị form sửa =====
+    // ===== EDIT FORM =====
     @GetMapping("/student/edit/{id}")
     public String showEditForm(@PathVariable Integer id, Model model) {
         Student s = studentService.getStudentById(id);
