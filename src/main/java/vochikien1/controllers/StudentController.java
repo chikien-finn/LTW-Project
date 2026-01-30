@@ -179,7 +179,9 @@ public class StudentController {
 
     @GetMapping("/student/{id}")
     public String detail(@PathVariable String id, Model model) {
-        model.addAttribute("student", service.getStudentById(id));
+        Student student = service.getStudentById(id);
+        if (student == null) return "redirect:/students";
+        model.addAttribute("student", student);
         return "student-detail";
     }
 }
