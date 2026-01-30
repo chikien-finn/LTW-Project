@@ -80,6 +80,12 @@ public class StudentService {
     }
 
     public Student save(Student student) {
+
+        // ⭐ DÒNG QUYẾT ĐỊNH
+        if (student.getId() != null && student.getId().isBlank()) {
+            student.setId(null); // cho Mongo tự sinh
+        }
+
         return repo.save(student);
     }
 

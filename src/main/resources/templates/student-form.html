@@ -3,8 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <title>Thông tin sinh viên</title>
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
@@ -15,123 +21,98 @@
         .card {
             border: none;
             border-radius: 12px;
-            overflow: hidden;
         }
         .card-header {
             background: linear-gradient(45deg, #0d6efd, #0099ff);
-            padding: 1.5rem;
-            border: none;
-        }
-        .form-label {
-            color: #495057;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
+            border-radius: 12px 12px 0 0;
         }
         .form-control, .form-select {
             border-radius: 8px;
-            padding: 0.6rem 1rem;
-            border: 1px solid #dee2e6;
-            transition: all 0.2s;
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
         }
         .btn-save {
             background: linear-gradient(45deg, #198754, #20c997);
             border: none;
             border-radius: 8px;
-            padding: 0.8rem;
             font-weight: 600;
-            transition: all 0.3s;
-        }
-        .btn-save:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(25, 135, 84, 0.3);
-            color: white;
-        }
-        .input-group-text {
-            background-color: #f8f9fa;
-            border-radius: 8px 0 0 8px;
-            color: #6c757d;
         }
     </style>
 </head>
-<body>
 
+<body>
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-7 col-lg-6">
-            
+
+            <!-- Back -->
             <div class="mb-3">
                 <a th:href="@{/students}" class="text-decoration-none text-muted">
-                    <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
+                    <i class="fas fa-arrow-left"></i> Quay lại danh sách
                 </a>
             </div>
 
             <div class="card shadow-lg">
-                <div class="card-header text-white text-center">
-                    <h4 class="mb-0 fw-bold">
+                <div class="card-header text-white text-center p-4">
+                    <h4 class="fw-bold mb-0">
                         <i class="fas fa-user-edit me-2"></i>
                         <span th:text="${student.id == null ? 'THÊM SINH VIÊN MỚI' : 'CẬP NHẬT THÔNG TIN'}"></span>
                     </h4>
-                    <p class="small mb-0 opacity-75 mt-1">Vui lòng điền đầy đủ các thông tin bên dưới</p>
                 </div>
 
-                <div class="card-body p-4 p-md-5">
+                <div class="card-body p-4">
                     <form th:action="@{/student/save}" th:object="${student}" method="post">
-                        
-                        <input type="hidden" th:field="*{id}" />
 
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">Họ và tên sinh viên</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                <input type="text" class="form-control" 
-                                       placeholder="Ví dụ: Nguyễn Văn A" th:field="*{name}" required>
-                            </div>
+                        <!-- CHỈ GỬI ID KHI EDIT -->
+                        <input type="hidden"
+                               th:if="${student.id != null}"
+                               th:field="*{id}" />
+
+                        <!-- NAME -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Họ và tên</label>
+                            <input type="text"
+                                   class="form-control"
+                                   th:field="*{name}"
+                                   placeholder="Ví dụ: Võ Chí Kiên"
+                                   required>
                         </div>
 
+                        <!-- AGE + GENDER -->
                         <div class="row">
-                            <div class="col-md-6 mb-4">
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label fw-bold">Tuổi</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-calendar-day"></i></span>
-                                    <input type="number" class="form-control" 
-                                           placeholder="18+" th:field="*{age}" min="18">
-                                </div>
+                                <input type="number"
+                                       class="form-control"
+                                       th:field="*{age}"
+                                       min="16"
+                                       placeholder="18">
                             </div>
 
-                            <div class="col-md-6 mb-4">
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label fw-bold">Giới tính</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
-                                    <select class="form-select" th:field="*{gender}">
-                                        <option value="">Chọn...</option>
-                                        <option value="Nam">Nam</option>
-                                        <option value="Nữ">Nữ</option>
-                                    </select>
-                                </div>
+                                <select class="form-select" th:field="*{gender}">
+                                    <option value="">Chọn...</option>
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                </select>
                             </div>
                         </div>
 
+                        <!-- EMAIL -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">Địa chỉ Email</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                <input type="email" class="form-control" 
-                                       placeholder="name@example.com" th:field="*{email}">
-                            </div>
+                            <label class="form-label fw-bold">Email</label>
+                            <input type="email"
+                                   class="form-control"
+                                   th:field="*{email}"
+                                   placeholder="kien102035@donga.edu.vn">
                         </div>
 
-                        <div class="d-grid gap-2 mt-2">
+                        <!-- BUTTON -->
+                        <div class="d-grid">
                             <button type="submit" class="btn btn-success btn-save text-white">
-                                <i class="fas fa-check-circle me-2"></i> Xác nhận lưu dữ liệu
-                            </button>
-                            <button type="reset" class="btn btn-link btn-sm text-muted text-decoration-none">
-                                Làm mới biểu mẫu
+                                <i class="fas fa-check-circle me-1"></i> Lưu dữ liệu
                             </button>
                         </div>
+
                     </form>
                 </div>
             </div>
