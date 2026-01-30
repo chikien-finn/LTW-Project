@@ -176,5 +176,11 @@ public class StudentController {
         service.delete(id);
         return "redirect:/students";
     }
+
+    @GetMapping("/student/{id}")
+    public String detail(@PathVariable String id, Model model) {
+        model.addAttribute("student", service.getStudentById(id));
+        return "student-detail";
+    }
 }
 
