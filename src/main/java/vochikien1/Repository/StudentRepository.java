@@ -10,15 +10,15 @@
 // }
 
 
-package vochikien1.Repository;
+package vochikien1.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import vochikien1.entities.Student;
 
 import java.util.List;
 
-public interface StudentRepository
-        extends MongoRepository<Student, String> {
+public interface StudentRepository extends MongoRepository<Student, String> {
 
-                List<Student> findByNameContainingIgnoreCase(String name);
+    List<Student> findByNameContainingIgnoreCase(String name);
 }
+

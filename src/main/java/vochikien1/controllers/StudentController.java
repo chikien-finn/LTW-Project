@@ -102,88 +102,79 @@
 
 package vochikien1.controllers;
 
-import vochikien1.entities.Student;
-import vochikien1.services.StudentService;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import vochikien1.entities.Student;
+import vochikien1.services.StudentService;
 
 import java.util.List;
 
 @Controller
 public class StudentController {
 
-    @Autowired
-    private StudentService studentService;
+    private final StudentService service;
+
+    public StudentController(StudentService service) {
+        this.service = service;
+    }
 
     // ===== API JSON =====
     @GetMapping("/api/students")
     @ResponseBody
-    public List<Student> getAllStudents() {
-        return studentService.getAllStudents();
+    public List<Student> apiGetAll() {
+        return service.getAllStudents();
     }
 
-    // ===== LIST + SEARCH (THEO NAME) =====
+    @PostMapping("/api/students")
+    @ResponseBody
+    public Student apiCreate(@RequestBody Student student) {
+        return service.save(student);
+    }
+
+    // ===== LIST + SEARCH =====
     @GetMapping("/students")
-    public String listStudents(
-            @RequestParam(name = "keyword", required = false) String keyword,
+    public String list(
+            @RequestParam(required = false) String keyword,
             Model model) {
 
-        List<Student> students;
-
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            students = studentService.searchByName(keyword);
-        } else {
-            students = studentService.getAllStudents();
-        }
+        List<Student> students =
+                (keyword == null || keyword.isBlank())
+                        ? service.getAllStudents()
+                        : service.searchByName(keyword);
 
         model.addAttribute("students", students);
         model.addAttribute("keyword", keyword);
         return "students";
     }
 
-    // ===== DETAIL =====
-    @GetMapping("/student/{id}")
-    public String viewDetail(@PathVariable String id, Model model) {
-        Student s = studentService.getStudentById(id);
-        if (s != null) {
-            model.addAttribute("student", s);
-            return "student-detail";
-        }
-        return "redirect:/students";
-    }
-
-    // ===== ADD FORM =====
+    // ===== ADD =====
     @GetMapping("/student/add")
-    public String showAddForm(Model model) {
+    public String addForm(Model model) {
         model.addAttribute("student", new Student());
         return "student-form";
     }
 
-    // ===== SAVE (ADD + UPDATE) =====
+    // ===== SAVE =====
     @PostMapping("/student/save")
-    public String saveStudent(@ModelAttribute Student student) {
-        studentService.saveStudent(student);
+    public String save(@Valid @ModelAttribute Student student) {
+        service.save(student);
         return "redirect:/students";
     }
 
-    // ===== EDIT FORM =====
+    // ===== EDIT =====
     @GetMapping("/student/edit/{id}")
-    public String showEditForm(@PathVariable String id, Model model) {
-        Student s = studentService.getStudentById(id);
-        if (s != null) {
-            model.addAttribute("student", s);
-            return "student-form";
-        }
-        return "redirect:/students";
+    public String edit(@PathVariable String id, Model model) {
+        model.addAttribute("student", service.getStudentById(id));
+        return "student-form";
     }
 
     // ===== DELETE =====
     @GetMapping("/student/delete/{id}")
-    public String deleteStudent(@PathVariable String id) {
-        studentService.deleteStudent(id);
+    public String delete(@PathVariable String id) {
+        service.delete(id);
         return "redirect:/students";
     }
 }
+

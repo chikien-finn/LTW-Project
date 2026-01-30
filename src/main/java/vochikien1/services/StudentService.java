@@ -51,11 +51,9 @@
 
 package vochikien1.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import vochikien1.Repository.StudentRepository;
 import vochikien1.entities.Student;
+import vochikien1.repository.StudentRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,33 +61,30 @@ import java.util.Optional;
 @Service
 public class StudentService {
 
-    @Autowired
-    private StudentRepository repository;
+    private final StudentRepository repo;
 
-    // ===== READ: Lấy tất cả =====
+    public StudentService(StudentRepository repo) {
+        this.repo = repo;
+    }
+
     public List<Student> getAllStudents() {
-        return repository.findAll();
+        return repo.findAll();
     }
 
-    // ===== READ: Lấy theo ID =====
     public Student getStudentById(String id) {
-        Optional<Student> optional = repository.findById(id);
-        return optional.orElse(null);
+        return repo.findById(id).orElse(null);
     }
 
-    // ===== READ: Tìm theo tên =====
-    public List<Student> searchByName(String name) {
-        return repository.findByNameContainingIgnoreCase(name);
+    public List<Student> searchByName(String keyword) {
+        return repo.findByNameContainingIgnoreCase(keyword);
     }
 
-    // ===== CREATE + UPDATE =====
-    public void saveStudent(Student student) {
-        repository.save(student);
-        // MongoDB tự quyết định insert/update
+    public Student save(Student student) {
+        return repo.save(student);
     }
 
-    // ===== DELETE =====
-    public void deleteStudent(String id) {
-        repository.deleteById(id);
+    public void delete(String id) {
+        repo.deleteById(id);
     }
 }
+
