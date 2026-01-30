@@ -74,7 +74,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Student {
 
     @Id
-    private String id;
+    private Integer id;
 
     @NotBlank(message = "Tên không được để trống")
     private String name;
@@ -90,11 +90,11 @@ public class Student {
     @NotBlank
     private String gender;
 
-    public String getId() {
+    public Integer  getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer  id) {
         this.id = id;
     }
 

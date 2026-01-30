@@ -158,15 +158,23 @@ public class StudentController {
 
     // ===== SAVE =====
     @PostMapping("/student/save")
-    public String save(@Valid @ModelAttribute Student student) {
-        service.save(student);
-        return "redirect:/students";
+    public String save(@ModelAttribute Student student, Model model) {
+        try {
+            service.save(student);
+            return "redirect:/students";
+        } catch (Exception e) {
+            model.addAttribute("error", "ID đã tồn tại");
+            model.addAttribute("student", student);
+            return "student-form";
+        }
     }
 
     // ===== EDIT =====
     @GetMapping("/student/edit/{id}")
     public String edit(@PathVariable String id, Model model) {
-        model.addAttribute("student", service.getStudentById(id));
+        Student student = service.getStudentById(id);
+        if (student == null) return "redirect:/students";
+        model.addAttribute("student", student);
         return "student-form";
     }
 
@@ -177,12 +185,6 @@ public class StudentController {
         return "redirect:/students";
     }
 
-    @GetMapping("/student/{id}")
-    public String detail(@PathVariable String id, Model model) {
-        Student student = service.getStudentById(id);
-        if (student == null) return "redirect:/students";
-        model.addAttribute("student", student);
-        return "student-detail";
-    }
+
 }
 
