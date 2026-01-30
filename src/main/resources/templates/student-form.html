@@ -1,31 +1,53 @@
-<form th:action="@{/student/save}" th:object="${student}" method="post">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0"><i class="fas fa-user-graduate me-2"></i>Thông Tin Sinh Viên</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form th:action="@{/student/save}" th:object="${student}" method="post">
+                        
+                        <input type="hidden" th:field="*{id}" />
 
-    <!-- ID ẨN -->
-    <input type="hidden" th:field="*{id}" />
+                        <div class="mb-4">
+                            <label class="form-label fw-bold"><i class="fas fa-id-card me-2 text-primary"></i>Họ tên</label>
+                            <input type="text" class="form-control shadow-sm" 
+                                   placeholder="Nhập họ và tên..." th:field="*{name}" required>
+                        </div>
 
-    <div class="mb-3">
-        <label class="form-label">Họ tên</label>
-        <input type="text" class="form-control" th:field="*{name}">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold"><i class="fas fa-calendar-alt me-2 text-primary"></i>Tuổi</label>
+                                <input type="number" class="form-control shadow-sm" 
+                                       placeholder="VD: 20" th:field="*{age}" min="18">
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold"><i class="fas fa-venus-mars me-2 text-primary"></i>Giới tính</label>
+                                <select class="form-select shadow-sm" th:field="*{gender}">
+                                    <option value="">-- Chọn --</option>
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold"><i class="fas fa-envelope me-2 text-primary"></i>Email</label>
+                            <input type="email" class="form-control shadow-sm" 
+                                   placeholder="vi-du@email.com" th:field="*{email}">
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg shadow">
+                                <i class="fas fa-save me-2"></i>Lưu thông tin
+                            </button>
+                            <a href="/student/list" class="btn btn-light btn-sm text-secondary">Quay lại danh sách</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            </div>
     </div>
-
-    <div class="mb-3">
-        <label class="form-label">Tuổi</label>
-        <input type="number" class="form-control" th:field="*{age}">
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Email</label>
-        <input type="email" class="form-control" th:field="*{email}">
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Giới tính</label>
-        <select class="form-select" th:field="*{gender}">
-            <option value="">-- Chọn --</option>
-            <option value="Nam">Nam</option>
-            <option value="Nữ">Nữ</option>
-        </select>
-    </div>
-
-    <button type="submit" class="btn btn-success">Lưu</button>
-</form>
+</div>
