@@ -105,6 +105,7 @@ package vochikien1.controllers;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import vochikien1.entities.Student;
 import vochikien1.services.StudentService;
@@ -129,7 +130,7 @@ public class StudentController {
 
     @PostMapping("/api/students")
     @ResponseBody
-    public Student apiCreate(@RequestBody Student student) {
+    public Student apiCreate(@Valid @RequestBody Student student) {
         return service.save(student);
     }
 
@@ -139,15 +140,22 @@ public class StudentController {
             @RequestParam(required = false) String keyword,
             Model model) {
 
-        List<Student> students =
-                (keyword == null || keyword.isBlank())
-                        ? service.getAllStudents()
-                        : service.searchByName(keyword);
+        List<Student> students;
+
+        if (keyword == null || keyword.isBlank()) {
+            students = service.getAllStudents();
+        } else {
+            Student s = service.getStudentById(keyword);
+            students = (s != null)
+                    ? List.of(s)
+                    : service.searchByName(keyword);
+        }
 
         model.addAttribute("students", students);
         model.addAttribute("keyword", keyword);
         return "students";
     }
+
 
     // ===== ADD =====
     @GetMapping("/student/add")
@@ -156,17 +164,18 @@ public class StudentController {
         return "student-form";
     }
 
-    // ===== SAVE =====
     @PostMapping("/student/save")
-    public String save(@ModelAttribute Student student, Model model) {
-        try {
-            service.save(student);
-            return "redirect:/students";
-        } catch (Exception e) {
-            model.addAttribute("error", "ID đã tồn tại");
-            model.addAttribute("student", student);
+    public String save(
+            @Valid @ModelAttribute Student student,
+            BindingResult result,
+            Model model) {
+
+        if (result.hasErrors()) {
             return "student-form";
         }
+
+        service.save(student);
+        return "redirect:/students";
     }
 
     // ===== EDIT =====
@@ -185,6 +194,11 @@ public class StudentController {
         return "redirect:/students";
     }
 
+    @GetMapping("/student/{id}")
+    public String detail(@PathVariable String id, Model model) {
+        model.addAttribute("student", service.getStudentById(id));
+        return "student-detail";
+    }
 
 }
 

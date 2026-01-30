@@ -74,64 +74,39 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Student {
 
     @Id
-    private Integer id;
+    private String id; // Mongo tự sinh
 
     @NotBlank(message = "Tên không được để trống")
     private String name;
 
-    @Min(16)
-    @Max(100)
+    @Min(value = 16, message = "Tuổi phải >= 16")
+    @Max(value = 100, message = "Tuổi phải <= 100")
     private int age;
 
-    @Email
-    @NotBlank
+    @Email(message = "Email không hợp lệ")
+    @NotBlank(message = "Email không được để trống")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Giới tính không được để trống")
     private String gender;
-
-    public Integer  getId() {
-        return id;
-    }
-
-    public void setId(Integer  id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
 
     public Student() {}
 
-    // getter / setter
+    // getter setter
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public int getAge() { return age; }
+    public void setAge(int age) { this.age = age; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
 }
+
 
