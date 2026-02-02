@@ -4,6 +4,10 @@ WORKDIR /app
 
 COPY . .
 
+# CẤP QUYỀN CHẠY CHO mvnw
+RUN chmod +x mvnw
+
+# BUILD
 RUN ./mvnw clean package -DskipTests
 
 EXPOSE 8080
