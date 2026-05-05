@@ -16,14 +16,63 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
 
-    // ===== API JSON =====
+    // ===================== API JSON =====================
+
+    // GET ALL
     @GetMapping("/api/students")
     @ResponseBody
     public List<Student> getAllStudents() {
         return studentService.getAllStudents();
     }
 
-    // ===== LIST + SEARCH (ID hoặc NAME) =====
+    // GET BY ID
+    @GetMapping("/api/students/{id}")
+    @ResponseBody
+    public Student getStudentById(@PathVariable Integer id) {
+        return studentService.getStudentById(id);
+    }
+
+    // SEARCH (name hoặc id)
+    @GetMapping("/api/students/search")
+    @ResponseBody
+    public List<Student> searchStudents(@RequestParam String keyword) {
+
+        if (keyword.matches("\\d+")) {
+            Student s = studentService.getStudentById(Integer.parseInt(keyword));
+            return (s != null) ? List.of(s) : List.of();
+        } else {
+            return studentService.searchByName(keyword);
+        }
+    }
+
+    // CREATE
+    @PostMapping("/api/students")
+    @ResponseBody
+    public Student createStudent(@RequestBody Student student) {
+        studentService.saveStudent(student);
+        return student;
+    }
+
+    // UPDATE
+    @PutMapping("/api/students/{id}")
+    @ResponseBody
+    public Student updateStudent(@PathVariable Integer id,
+                                 @RequestBody Student student) {
+        student.setId(id);
+        studentService.saveStudent(student);
+        return student;
+    }
+
+    // DELETE
+    @DeleteMapping("/api/students/{id}")
+    @ResponseBody
+    public String deleteStudentApi(@PathVariable Integer id) {
+        studentService.deleteStudent(id);
+        return "Deleted successfully";
+    }
+
+    // ===================== MVC (GIỮ NGUYÊN) =====================
+
     @GetMapping("/students")
     public String listStudents(
             @RequestParam(name = "keyword", required = false) String keyword,
@@ -33,15 +82,12 @@ public class StudentController {
 
         if (keyword != null && !keyword.trim().isEmpty()) {
 
-            // keyword là số → tìm theo ID
             if (keyword.matches("\\d+")) {
                 Student s = studentService.getStudentById(
                         Integer.parseInt(keyword)
                 );
                 students = (s != null) ? List.of(s) : List.of();
-            }
-            // keyword là chữ → tìm theo tên
-            else {
+            } else {
                 students = studentService.searchByName(keyword);
             }
 
@@ -54,7 +100,6 @@ public class StudentController {
         return "students";
     }
 
-    // ===== DETAIL =====
     @GetMapping("/student/{id}")
     public String viewDetail(@PathVariable Integer id, Model model) {
         Student s = studentService.getStudentById(id);
@@ -65,21 +110,18 @@ public class StudentController {
         return "redirect:/students";
     }
 
-    // ===== ADD FORM =====
     @GetMapping("/student/add")
     public String showAddForm(Model model) {
         model.addAttribute("student", new Student());
         return "student-form";
     }
 
-    // ===== SAVE (ADD + UPDATE) =====
     @PostMapping("/student/save")
     public String saveStudent(@ModelAttribute Student student) {
         studentService.saveStudent(student);
         return "redirect:/students";
     }
 
-    // ===== EDIT FORM =====
     @GetMapping("/student/edit/{id}")
     public String showEditForm(@PathVariable Integer id, Model model) {
         Student s = studentService.getStudentById(id);
@@ -90,7 +132,6 @@ public class StudentController {
         return "redirect:/students";
     }
 
-    // ===== DELETE =====
     @GetMapping("/student/delete/{id}")
     public String deleteStudent(@PathVariable Integer id) {
         studentService.deleteStudent(id);
