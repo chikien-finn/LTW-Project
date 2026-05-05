@@ -1,11 +1,13 @@
 package vochikien1.controllers;
 
+import jakarta.validation.Valid;
 import vochikien1.entities.Student;
 import vochikien1.services.StudentService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -117,7 +119,12 @@ public class StudentController {
     }
 
     @PostMapping("/student/save")
-    public String saveStudent(@ModelAttribute Student student) {
+    public String saveStudent(@Valid @ModelAttribute("student") Student student,
+                              BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "student-form";
+        }
+
         studentService.saveStudent(student);
         return "redirect:/students";
     }

@@ -59,7 +59,7 @@
                 </div>
 
                 <div class="card-body p-4">
-                    <form th:action="@{/student/save}" th:object="${student}" method="post">
+                    <form th:action="@{/student/save}" th:object="${student}" method="post" novalidate>
 
                         <!-- CHỈ GỬI ID KHI EDIT -->
                         <input type="hidden"
@@ -73,7 +73,8 @@
                                    class="form-control"
                                    th:field="*{name}"
                                    placeholder="Ví dụ: Võ Chí Kiên"
-                                   required>
+                                   th:errorclass="is-invalid">
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
                         </div>
 
                         <!-- AGE + GENDER -->
@@ -84,16 +85,20 @@
                                        class="form-control"
                                        th:field="*{age}"
                                        min="16"
-                                       placeholder="18">
+                                       max="100"
+                                       placeholder="18"
+                                       th:errorclass="is-invalid">
+                                <div class="text-danger small mt-1" th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></div>
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-bold">Giới tính</label>
-                                <select class="form-select" th:field="*{gender}">
+                                <select class="form-select" th:field="*{gender}" th:errorclass="is-invalid">
                                     <option value="">Chọn...</option>
                                     <option value="Nam">Nam</option>
                                     <option value="Nữ">Nữ</option>
                                 </select>
+                                <div class="text-danger small mt-1" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></div>
                             </div>
                         </div>
 
@@ -103,7 +108,9 @@
                             <input type="email"
                                    class="form-control"
                                    th:field="*{email}"
-                                   placeholder="kien102035@donga.edu.vn">
+                                   placeholder="kien102035@donga.edu.vn"
+                                   th:errorclass="is-invalid">
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                         </div>
 
                         <!-- BUTTON -->
